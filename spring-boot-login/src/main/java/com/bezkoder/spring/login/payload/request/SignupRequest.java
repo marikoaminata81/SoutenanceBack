@@ -14,7 +14,7 @@ public class SignupRequest {
     @NotBlank
     private String numero;
     private Set<String> role;
-
+    private String photo;
     @NotBlank
 
     private String password;
@@ -43,6 +43,14 @@ public class SignupRequest {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(String photo) {
+        this.photo = photo;
     }
 
     public String getNumero() {

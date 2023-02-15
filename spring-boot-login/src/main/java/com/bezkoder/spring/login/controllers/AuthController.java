@@ -74,11 +74,13 @@ public class AuthController {
                                    userDetails.getEmail(),
                                    roles));*/
     String rooool= "ROLE_User";
+    String roleee= "ROLE_Admin";
     if (roles.equals(rooool)){
       return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtCookie.toString()).body("Bienvenue User");
     }
     else
-      return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtCookie.toString()).body("Bienvenue Admin, Hello User");
+      roles.equals(roleee);
+      return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtCookie.toString()).body("Bienvenue Admin");
   }
 
   @PostMapping("/inscription")
@@ -96,6 +98,7 @@ public class AuthController {
                           signUpRequest.getPrenom(),
                           signUpRequest.getUsername(),
                           signUpRequest.getNumero(),
+                          signUpRequest.getPhoto(),
                           encoder.encode(signUpRequest.getPassword()));
 
     Set<String> strRoles = signUpRequest.getRole();
@@ -124,12 +127,16 @@ public class AuthController {
     }
 
     user.setRoles(roles);
+    user.setNom(signUpRequest.getNom());
+    user.setPrenom(signUpRequest.getPrenom());
+    user.setUsername(signUpRequest.getUsername());
+    user.setPhoto("http://127.0.0.1/ikagaImg.jpg");
     userRepository.save(user);
 
-    return ResponseEntity.ok(new MessageResponse("Collaborateur ajouter avec succes", true));
+    return ResponseEntity.ok(new MessageResponse("Utilisateur ajouter avec succes", true));
   }
 
-  @PostMapping("/signout")
+  @PostMapping("/deconnection")
   public ResponseEntity<?> logoutUser() {
     ResponseCookie cookie = jwtUtils.getCleanJwtCookie();
     return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString())
