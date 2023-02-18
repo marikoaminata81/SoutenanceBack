@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="JpbDataSourceConfig">
+    <data-sources>
+      <data-source id="1a6e1e7e-2bc8-4b06-875c-1b0ed742d9f0" name="projetfinal" url="jdbc:mysql://localhost:3309/projetfinal?useSSL=false&amp;allowMultiQueries=true&amp;serverTimezone=UTC" driverClass="com.mysql.cj.jdbc.Driver" />
+      <data-source id="3364879c-48f1-43d5-a0be-90e1838775c8" name="projetfinal1" url="jdbc:mysql://localhost:3309/projetfinal?useSSL=false&amp;allowMultiQueries=true&amp;serverTimezone=UTC" driverClass="com.mysql.cj.jdbc.Driver" />
+    </data-sources>
+  </component>
+</project>
