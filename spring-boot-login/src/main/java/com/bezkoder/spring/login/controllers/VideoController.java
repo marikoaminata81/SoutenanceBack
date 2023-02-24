@@ -9,6 +9,7 @@ import com.bezkoder.spring.login.models.Video;
 import com.bezkoder.spring.login.payload.response.CommentResponse;
 import com.bezkoder.spring.login.payload.response.MessageResponse;
 import com.bezkoder.spring.login.payload.response.PostResponse;
+import com.bezkoder.spring.login.repository.CommentaireRepository;
 import com.bezkoder.spring.login.repository.UserRepository;
 import com.bezkoder.spring.login.repository.VideoRepository;
 import com.bezkoder.spring.login.security.services.CommentaireService;
@@ -27,6 +28,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,24 +43,46 @@ public class VideoController {
     private final UserService userService;
     private final UserRepository userRepository;
     private final VideoRepository videoRepository;
+    private final CommentaireRepository commentaireRepository;
 
     @PostMapping("/posts/create")
 
-    public ResponseEntity<Video> uploadVideoAndPhoto(
-
+    public void uploadVideoAndPhoto(
             @RequestParam("titre") String titre,
             @RequestParam("imagecouverture") MultipartFile imagecouverture,
             @RequestParam("url") MultipartFile url
 
     ) throws IOException {
 
+        try {
 
+            videoServiceImpl.saveVideoAndPhoto(titre, imagecouverture, url);
 
-        Video entity = videoServiceImpl.saveVideoAndPhoto(titre,imagecouverture, url);
-
-        return ResponseEntity.ok(entity);
-
+        } catch (IOException e) {
+           System.err.println(e);
+        }
     }
+
+
+    /*
+        @PostMapping("/posts/create")
+
+    public ResponseEntity<String> uploadVideoAndPhoto(
+            @RequestParam("titre") String titre,
+            @RequestParam("imagecouverture") MultipartFile imagecouverture,
+            @RequestParam("url") MultipartFile url
+
+    ) throws IOException {
+
+        try {
+            videoServiceImpl.saveVideoAndPhoto(titre, imagecouverture, url);
+            return ResponseEntity.ok("Vidéo publié avec Succes!");
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Publication échouée");
+        }
+    }
+     */
 
 
 
@@ -89,7 +114,7 @@ public class VideoController {
         return new ResponseEntity<>(updatePost, HttpStatus.OK);
     }
 
-    @PostMapping("/posts/{postId}/delete")
+    @DeleteMapping("/posts/{postId}/delete")
     public ResponseEntity<?> deletePost(@PathVariable("postId") Long postId) {
         videoService.deletePost(postId);
         return new ResponseEntity<>(HttpStatus.OK);
@@ -128,13 +153,13 @@ public class VideoController {
     @PostMapping("/posts/{postId}/like")
     public ResponseEntity<?> likePost(@PathVariable("postId") Long postId) {
         videoService.likePost(postId);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return  ResponseEntity.ok("Vidéo liké avec Succes!");
     }
 
     @PostMapping("/posts/{postId}/unlike")
     public ResponseEntity<?> unlikePost(@PathVariable("postId") Long postId) {
         videoService.unlikePost(postId);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseEntity.ok("Vidéo déliké avec Succes!");
     }
 
     @GetMapping("/posts/{postId}/comments")
@@ -150,20 +175,26 @@ public class VideoController {
 
     @PostMapping("/posts/{postId}/comments/create")
     public ResponseEntity<?> createPostComment(@PathVariable("postId") Long postId,
-                                               @RequestParam(value = "content") String contenue) {
-        Commentaire savedComment = videoService.createPostComment(postId, contenue);
-        CommentResponse commentResponse = CommentResponse.builder()
-                .commentaire(savedComment)
-                .likedByAuthUser(false)
-                .build();
-        return new ResponseEntity<>(commentResponse, HttpStatus.OK);
+                                               @RequestParam(value = "contenue") String contenue)  {
+
+
+
+         System.out.println("gfhjklm"+contenue);
+            Commentaire savedComment = videoService.createPostComment(postId, contenue);
+            CommentResponse commentResponse = CommentResponse.builder()
+                    .commentaire(savedComment)
+                    .likedByAuthUser(false)
+                    .build();
+
+            return new ResponseEntity<>(commentResponse, HttpStatus.OK);
+
     }
 
     @PostMapping("/posts/{postId}/comments/{commentId}/update")
     public ResponseEntity<?> updatePostComment(@PathVariable("commentId") Long commentId,
                                                @PathVariable("postId") Long postId,
-                                               @RequestParam(value = "content") String content) {
-        Commentaire savedComment = videoService.updatePostComment(commentId, postId, content);
+                                               @RequestParam(value = "contenue") String contenue) {
+        Commentaire savedComment = videoService.updatePostComment(commentId, postId, contenue);
         return new ResponseEntity<>(savedComment, HttpStatus.OK);
     }
 
@@ -199,16 +230,16 @@ public class VideoController {
 
     @PostMapping("/posts/{postId}/share/create")
     public ResponseEntity<?> createPostShare(@PathVariable("postId") Long postId,
-                                             @RequestParam(value = "content", required = false) Optional<String> content) {
-        String contentToAdd = content.isEmpty() ? null : content.get();
+                                             @RequestParam(value = "contenue", required = false) Optional<String> contenue) {
+        String contentToAdd = contenue.isEmpty() ? null : contenue.get();
         Video postShare = videoService.createPostShare(contentToAdd, postId);
         return new ResponseEntity<>(postShare, HttpStatus.OK);
     }
 
     @PostMapping("/posts/{postShareId}/share/update")
     public ResponseEntity<?> updatePostShare(@PathVariable("postShareId") Long postShareId,
-                                             @RequestParam(value = "content", required = false) Optional<String> content) {
-        String contentToAdd = content.isEmpty() ? null : content.get();
+                                             @RequestParam(value = "contenue", required = false) Optional<String> contenue) {
+        String contentToAdd = contenue.isEmpty() ? null : contenue.get();
         Video updatedPostShare = videoService.updatePostShare(contentToAdd, postShareId);
         return new ResponseEntity<>(updatedPostShare, HttpStatus.OK);
     }
@@ -226,5 +257,25 @@ public class VideoController {
     }
 
 
+
+
+
+
+    @PostMapping("/posts/{postId}/comments")
+    public String updatePostCommen(@PathVariable("postId") Long postId, @RequestBody String contenue) {
+        long id = 2;
+
+       Commentaire com = new Commentaire();
+       com.setContenue(contenue);
+       User us = userRepository.findById(id).get();
+       com.setAuthor(us);
+       Video vide = videoRepository.findById(postId).get();
+       com.setVideo(vide);
+       com.setLikeCount(0);
+       com.setDateCreated(new Date());
+       com.setDateLastModified(new Date());
+       commentaireRepository.save(com);
+       return "Amina";
+    }
 
 }

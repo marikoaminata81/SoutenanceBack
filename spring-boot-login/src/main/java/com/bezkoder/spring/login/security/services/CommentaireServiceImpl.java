@@ -36,15 +36,18 @@ public class CommentaireServiceImpl implements CommentaireService{
 
     @Override
     public Commentaire createNewCommentaire(String contenue, Video video) {
-        User authUser = userService.getAuthenticatedUser();
+        User user = userService.getAuthenticatedUser();
         Commentaire newComment = new Commentaire();
         newComment.setContenue(contenue);
-        newComment.setAuthor(authUser);
+        newComment.setAuthor(user);
         newComment.setVideo(video);
         newComment.setLikeCount(0);
         newComment.setDateCreated(new Date());
         newComment.setDateLastModified(new Date());
-        return commentRepository.save(newComment);
+        user.getLikedComments().add(newComment);
+
+        commentRepository.save(newComment);
+        return newComment;
 
     }
 

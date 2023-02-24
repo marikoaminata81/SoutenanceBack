@@ -195,12 +195,14 @@ public class UserServiceImp implements UserService{
     public User getAuthenticatedUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
+            System.err.println("rentre pas");
             return null;
         }
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        User user = new User(userDetails.getUsername(), userDetails.getPassword(), userDetails.getAuthorities());
+      //  User user = new User(userDetails.getUsername(), userDetails.getPassword(), userDetails.getAuthorities());
 
-        return user;
+        User user1 = userRepository.getReferenceById(userDetails.getId());
+        return user1;
     }
 
     @Override
@@ -226,7 +228,7 @@ public class UserServiceImp implements UserService{
     public List<User> getLikesByCommentPaginate(Commentaire commentaire, Integer page, Integer size) {
         return userRepository.findUsersByLikedComments(
                 commentaire,
-                PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "firstName", "lastName"))
+                PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "username"))
         );
     }
 

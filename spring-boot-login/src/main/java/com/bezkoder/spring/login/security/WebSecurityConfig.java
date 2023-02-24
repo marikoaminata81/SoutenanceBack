@@ -93,7 +93,7 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
             .antMatchers("/api/v1/**").permitAll()
 
             .antMatchers("/api/video/all").permitAll()
-
+            .antMatchers("/api/video/**").permitAll()
         .anyRequest().authenticated();
     http.formLogin();
     http.oauth2Login();

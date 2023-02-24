@@ -10,6 +10,7 @@ import com.bezkoder.spring.login.repository.UserRepository;
 import com.bezkoder.spring.login.repository.VideoRepository;
 import com.bezkoder.spring.login.payload.util.FileNamingUtil;
 import com.bezkoder.spring.login.payload.util.FileUploadUtil;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -388,22 +389,7 @@ return null;
                 .build();
     }
 
-    public void saveMedia(String titre , MultipartFile imagecouverture, MultipartFile url) throws IOException {
-        User user = userService.getAuthenticatedUser(); // récupérer l'utilisateur connecté
-// Enregistrer la photo
-        String photoPath = saveFile(imagecouverture);
 
-        // Enregistrer la vidéo
-        String VideoPath = saveFile(url);
-
-        // Enregistrer le média dans la base de données
-        Video media = new Video();
-        media.setTitre(titre);
-        media.setImagecouverture(photoPath);
-        media.setUrl(VideoPath);
-        media.setAuthor(user);
-        videoRepository.save(media);
-    }
 
 
     public Video saveVideoAndPhoto(String titre , MultipartFile imagecouverture, MultipartFile url) throws IOException {
@@ -414,9 +400,12 @@ return null;
         String VideoPath = saveFile(url);
 
         User user = userService.getAuthenticatedUser();
-
+        System.err.println(user.getId());
+        System.err.println(user.getNom());
+        System.err.println(user);
         // Créer une nouvelle vidéo
         Video video = new Video();
+
         video.setTitre(titre);
         video.setImagecouverture(photoPath);
         video.setUrl(VideoPath);
@@ -425,23 +414,27 @@ return null;
         video.setCommentCount(0);
         video.setShareCount(0);
         video.setIsTypeShare(false);
-
+        user.getVideoList().add(video);
         // Enregistrer la vidéo dans la base de données
         videoRepository.save(video);
 
         // Ajouter la vidéo à la liste de vidéos de l'utilisateur
-        user.getVideoList().add(video);
-        userRepository.save(user);
+
+        //userRepository.save(user);
 
         return video;
     }
 
+
+
+
+
+
     // Cette méthode permet d'enregistrer un fichier sur le disque et de renvoyer le chemin du fichier enregistré
     private String saveFile(MultipartFile file) throws IOException {
-        // Générer un nom de fichier unique pour éviter les conflits
-        String fileName = UUID.randomUUID().toString() + "." + StringUtils.getFilenameExtension(file.getOriginalFilename());
-        Path filePath = Paths.get("/path/to/upload/directory/" + fileName);
-        Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-        return filePath.toString();
+        String filePath = "C:/Users/ammariko/Documents/ionic/ikaGaFront/src/assets" + file.getOriginalFilename();
+        File dest = new File(filePath);
+        file.transferTo(dest);
+        return filePath;
     }
 }

@@ -60,7 +60,7 @@ public class User {
 
   @JsonIgnore
   @OneToMany(mappedBy = "author", cascade = CascadeType.REMOVE)
-  private List<Video> VideoList;
+  private List<Video> VideoList = new ArrayList<>();
 
   @JsonIgnore
   @ManyToMany(mappedBy = "likeList")
