@@ -7,8 +7,13 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import com.bezkoder.spring.login.payload.response.PostResponse;
+import com.bezkoder.spring.login.payload.response.UserResponse;
+import com.bezkoder.spring.login.security.services.UserService;
+import com.bezkoder.spring.login.security.services.VideoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,11 +21,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.bezkoder.spring.login.models.ERole;
 import com.bezkoder.spring.login.models.Role;
@@ -32,6 +33,7 @@ import com.bezkoder.spring.login.repository.RoleRepository;
 import com.bezkoder.spring.login.repository.UserRepository;
 import com.bezkoder.spring.login.security.jwt.JwtUtils;
 import com.bezkoder.spring.login.security.services.UserDetailsImpl;
+import org.springframework.web.multipart.MultipartFile;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -42,6 +44,11 @@ public class AuthController {
 
   @Autowired
   UserRepository userRepository;
+  @Autowired
+  VideoService videoService;
+
+  @Autowired
+  UserService userService;
 
   @Autowired
   RoleRepository roleRepository;
@@ -73,8 +80,8 @@ public class AuthController {
                                    userDetails.getUsername(),
                                    userDetails.getEmail(),
                                    roles));*/
-    String rooool= "ROLE_User";
-    String roleee= "ROLE_Admin";
+    String rooool= "ROLE_USER";
+    String roleee= "ROLE_ADMIN";
     if (roles.equals(rooool)){
       return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtCookie.toString()).body("Bienvenue User");
     }
@@ -131,6 +138,8 @@ public class AuthController {
     user.setPrenom(signUpRequest.getPrenom());
     user.setUsername(signUpRequest.getUsername());
     user.setPhoto("http://127.0.0.1/ikagaImg.jpg");
+    user.setFollowerCount(0);
+    user.setFollowingCount(0);
     userRepository.save(user);
 
     return ResponseEntity.ok(new MessageResponse("Utilisateur ajouter avec succes", true));
@@ -141,5 +150,77 @@ public class AuthController {
     ResponseCookie cookie = jwtUtils.getCleanJwtCookie();
     return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString())
         .body(new MessageResponse("Vous vous êtes deconnecter!", true));
+  }
+
+  @PostMapping("/account/update/profile-photo")
+  public ResponseEntity<?> updateProfilePhoto(@RequestParam("photo") MultipartFile photo) {
+    User updatedUser = userService.updateProfilePhoto(photo);
+    return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+  }
+
+
+
+  @PostMapping("/account/follow/{userId}")
+  public ResponseEntity<?> followUser(@PathVariable("userId") Long userId) {
+    userService.followUser(userId);
+    return new ResponseEntity<>(HttpStatus.OK);
+  }
+
+  @PostMapping("/account/unfollow/{userId}")
+  public ResponseEntity<?> unfollowUser(@PathVariable("userId") Long userId) {
+    userService.unfollowUser(userId);
+    return new ResponseEntity<>(HttpStatus.OK);
+  }
+
+  @GetMapping("/users/{userId}/following")
+  public ResponseEntity<?> getUserFollowingUsers(@PathVariable("userId") Long userId,
+                                                 @RequestParam("page") Integer page,
+                                                 @RequestParam("size") Integer size) {
+    page = page < 0 ? 0 : page-1;
+    size = size <= 0 ? 5 : size;
+    List<UserResponse> followingList = userService.getFollowingUsersPaginate(userId, page, size);
+    return new ResponseEntity<>(followingList, HttpStatus.OK);
+  }
+
+  @GetMapping("/users/{userId}/follower")
+  public ResponseEntity<?> getUserFollowerUsers(@PathVariable("userId") Long userId,
+                                                @RequestParam("page") Integer page,
+                                                @RequestParam("size") Integer size) {
+    page = page < 0 ? 0 : page-1;
+    size = size <= 0 ? 5 : size;
+    List<UserResponse> followingList = userService.getFollowerUsersPaginate(userId, page, size);
+    return new ResponseEntity<>(followingList, HttpStatus.OK);
+  }
+
+  @GetMapping("/users/{userId}")
+  public ResponseEntity<?> getUserById(@PathVariable("userId") Long userId) {
+    User authUser = userService.getAuthenticatedUser();
+    User targetUser = userService.getUserById(userId);
+    UserResponse userResponse = UserResponse.builder()
+            .user(targetUser)
+            .followedByAuthUser(targetUser.getFollowerUsers().contains(authUser))
+            .build();
+    return new ResponseEntity<>(userResponse, HttpStatus.OK);
+  }
+
+  @GetMapping("/users/{userId}/posts")
+  public ResponseEntity<?> getUserPosts(@PathVariable("userId") Long userId,
+                                        @RequestParam("page") Integer page,
+                                        @RequestParam("size") Integer size) {
+    page = page < 0 ? 0 : page-1;
+    size = size <= 0 ? 5 : size;
+    User targetUser = userService.getUserById(userId);
+    List<PostResponse> userPosts = videoService.getPostsByUserPaginate(targetUser, page, size);
+    return new ResponseEntity<>(userPosts, HttpStatus.OK);
+  }
+
+  @GetMapping("/users/search")
+  public ResponseEntity<?> searchUser(@RequestParam("key") String key,
+                                      @RequestParam("page") Integer page,
+                                      @RequestParam("size") Integer size) {
+    page = page < 0 ? 0 : page-1;
+    size = size <= 0 ? 5 : size;
+    List<UserResponse> userSearchResult = userService.getUserSearchResult(key, page, size);
+    return new ResponseEntity<>(userSearchResult, HttpStatus.OK);
   }
 }

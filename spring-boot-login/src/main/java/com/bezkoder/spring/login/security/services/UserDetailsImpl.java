@@ -17,20 +17,21 @@ import org.springframework.stereotype.Service;
 public class UserDetailsImpl implements UserDetails {
   private static final long serialVersionUID = 1L;
 
-  private Long iduser;
+  private Long id;
 
   private String username;
 
   private String numero;
+
 
   @JsonIgnore
   private String password;
 
   private Collection<? extends GrantedAuthority> authorities;
 
-  public UserDetailsImpl(Long iduser, String username, String numero, String password,
+  public UserDetailsImpl(Long id, String username, String numero, String password,
                          Collection<? extends GrantedAuthority> authorities) {
-    this.iduser = iduser;
+    this.id = id;
     this.username = username;
     this.numero = numero;
     this.password = password;
@@ -43,7 +44,7 @@ public class UserDetailsImpl implements UserDetails {
             .collect(Collectors.toList());
 
     return new UserDetailsImpl(
-            user.getIduser(),
+            user.getId(),
             user.getUsername(),
             user.getNumero(),
             user.getPassword(),
@@ -55,8 +56,8 @@ public class UserDetailsImpl implements UserDetails {
     return authorities;
   }
 
-  public Long getIduser() {
-    return iduser;
+  public Long getId() {
+    return id;
   }
 
   public String getNumero() {
@@ -100,6 +101,6 @@ public class UserDetailsImpl implements UserDetails {
     if (o == null || getClass() != o.getClass())
       return false;
     UserDetailsImpl user = (UserDetailsImpl) o;
-    return Objects.equals(iduser, user.iduser);
+    return Objects.equals(id, user.id);
   }
 }

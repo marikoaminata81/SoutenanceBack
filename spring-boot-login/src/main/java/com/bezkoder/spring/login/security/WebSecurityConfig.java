@@ -89,7 +89,11 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
         //.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
         .authorizeRequests().antMatchers("/api/auth/**").permitAll()
         .antMatchers("/api/test/**").permitAll()
-        .antMatchers("/api/User/**").permitAll()
+        .antMatchers("/api/User/**").authenticated()
+            .antMatchers("/api/v1/**").permitAll()
+
+            .antMatchers("/api/video/all").permitAll()
+
         .anyRequest().authenticated();
     http.formLogin();
     http.oauth2Login();

@@ -3,6 +3,7 @@ package com.bezkoder.spring.login.controllers;
 import com.bezkoder.spring.login.models.User;
 import com.bezkoder.spring.login.repository.UserRepository;
 import com.bezkoder.spring.login.security.services.UserService;
+import com.bezkoder.spring.login.security.services.VideoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;

@@ -1,12 +1,13 @@
 package com.bezkoder.spring.login.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.security.core.GrantedAuthority;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -26,7 +27,7 @@ import javax.validation.constraints.Size;
 public class User {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
-  private Long iduser;
+  private Long id;
   private String nom;
   private String prenom;
   private String username;
@@ -35,13 +36,40 @@ public class User {
   private String password;
   private String Adresse;
   private String photo;
-
+  private Integer followerCount=0;
+  private Integer followingCount=0;
 
   @ManyToMany(fetch = FetchType.LAZY)
   @JoinTable(name = "user_roles",
           joinColumns = @JoinColumn(name = "user_id"),
           inverseJoinColumns = @JoinColumn(name = "role_id"))
   private Set<Role> roles = new HashSet<>();
+
+  @JsonIgnore
+  @ManyToMany
+  @JoinTable(
+          name = "follow_users",
+          joinColumns = @JoinColumn(name = "followed_id"),
+          inverseJoinColumns = @JoinColumn(name = "follower_id")
+  )
+  private List<User> followerUsers = new ArrayList<>();
+
+  @JsonIgnore
+  @ManyToMany(mappedBy = "followerUsers")
+  private List<User> followingUsers = new ArrayList<>();
+
+  @JsonIgnore
+  @OneToMany(mappedBy = "author", cascade = CascadeType.REMOVE)
+  private List<Video> VideoList;
+
+  @JsonIgnore
+  @ManyToMany(mappedBy = "likeList")
+  private List<Video> likedPosts = new ArrayList<>();
+
+  @JsonIgnore
+  @ManyToMany(mappedBy = "likeList")
+  private List<Commentaire> likedComments = new ArrayList<>();
+
 
   public User(String nom,String prenom,String username, String numero, String photo,String password ) {
     this.nom = nom;
@@ -50,6 +78,13 @@ public class User {
     this.numero = numero;
     this.photo = photo;
     this.password = password;
+
+  }
+
+
+  public User(String username, String password, Collection<? extends GrantedAuthority> authorities) {
+    this.username=username;
+    this.password=password;
 
   }
 }
