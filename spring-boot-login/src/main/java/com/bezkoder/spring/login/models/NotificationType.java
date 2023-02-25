@@ -7,5 +7,11 @@ public enum NotificationType {
 
     POST_SHARE,
 
-    COMMENT_LIKE
+    COMMENT_LIKE,
+
+    PASSER_COMMANDE,
+
+    POSTER_PRODUIT,
+
+    AVERTISSEMENT
 }

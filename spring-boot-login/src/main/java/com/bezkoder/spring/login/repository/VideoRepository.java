@@ -10,9 +10,9 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 @Repository
 public interface VideoRepository extends JpaRepository<Video,Long> {
-    List<Video> findVideoByAuthor(User author, Pageable pageable);
+    List<Video> findVideoByAuthor(User author);
     List<Video> findVideoByAuthorIdIn(List<Long> followingUserIds, Pageable pageable);
-    List<Video> findVideoBySharedPost(Video video, Pageable pageable);
+    List<Video> findVideoBySharedPost(Video video);
    // List<Video> findVideoByPostTags(Tag tag, Pageable pageable);
 
     @Query(value = "select titre,imagecouverture,url, like_count, comment_count, share_count from video;"

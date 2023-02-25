@@ -3,7 +3,6 @@ package com.bezkoder.spring.login.security.services;
 import com.bezkoder.spring.login.exception.EmptyCommentException;
 import com.bezkoder.spring.login.exception.InvalidOperationException;
 import com.bezkoder.spring.login.exception.PostNotFoundException;
-import com.bezkoder.spring.login.exception.UserNotFoundException;
 import com.bezkoder.spring.login.models.*;
 import com.bezkoder.spring.login.payload.response.PostResponse;
 import com.bezkoder.spring.login.repository.UserRepository;
@@ -11,7 +10,6 @@ import com.bezkoder.spring.login.repository.VideoRepository;
 import com.bezkoder.spring.login.payload.util.FileNamingUtil;
 import com.bezkoder.spring.login.payload.util.FileUploadUtil;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.env.Environment;
@@ -21,18 +19,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.Column;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 @Service
 @Transactional
@@ -63,7 +52,7 @@ public class VideoServiceImpl implements VideoService {
                 .build();
     }
 
-    @Override
+/*    @Override
     public List<PostResponse> getTimelinePostsPaginate(Integer page, Integer size) {
         User authUser = userService.getAuthenticatedUser();
         List<User> followingList = authUser.getFollowingUsers();
@@ -73,14 +62,11 @@ public class VideoServiceImpl implements VideoService {
                         followingListIds,
                         PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "dateCreated")))
                 .stream().map(this::postToPostResponse).collect(Collectors.toList());
-    }
+    }*/
 
     @Override
-    public List<PostResponse> getPostSharesPaginate(Video sharedPost, Integer page, Integer size) {
-        return videoRepository.findVideoBySharedPost(
-                        sharedPost,
-                        PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "dateCreated")))
-                .stream().map(this::postToPostResponse).collect(Collectors.toList());
+    public List<Video> getPostSharesPaginate(Video sharedPost) {
+        return videoRepository.findVideoBySharedPost(sharedPost);
     }
 
   /*  @Override
@@ -92,11 +78,8 @@ public class VideoServiceImpl implements VideoService {
     }*/
 
     @Override
-    public List<PostResponse> getPostsByUserPaginate(User author, Integer page, Integer size) {
-        return videoRepository.findVideoByAuthor(
-                        author,
-                        PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "dateCreated")))
-                .stream().map(this::postToPostResponse).collect(Collectors.toList());
+    public List<Video> getPostsByUserPaginate(User author) {
+        return videoRepository.findVideoByAuthor(author);
     }
 
     @Override
@@ -228,7 +211,7 @@ return null;
         User authUser = userService.getAuthenticatedUser();
         Video targetPost = getPostById(postId);
         if (!targetPost.getLikeList().contains(authUser)) {
-            targetPost.setLikeCount(targetPost.getLikeCount() + 1);
+            targetPost.setLikeCount(targetPost.getLikeCount()+1);
             targetPost.getLikeList().add(authUser);
             videoRepository.save(targetPost);
 

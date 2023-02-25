@@ -11,9 +11,9 @@ import java.util.List;
 public interface VideoService {
     Video getPostById(Long postId);
     PostResponse getPostResponseById(Long postId);
-    List<PostResponse> getPostsByUserPaginate(User author, Integer page, Integer size);
-    List<PostResponse> getTimelinePostsPaginate(Integer page, Integer size);
-    List<PostResponse> getPostSharesPaginate(Video sharedPost, Integer page, Integer size);
+    List<Video> getPostsByUserPaginate(User author);
+   // List<PostResponse> getTimelinePostsPaginate(Integer page, Integer size);
+    List<Video> getPostSharesPaginate(Video sharedPost);
    // List<PostResponse> getPostByTagPaginate(Tag tag, Integer page, Integer size);
     Video createNewPost(String titre, MultipartFile imagecouverture,MultipartFile url);
     Video updatePost(Long postId, String titre, MultipartFile imagecouverture,MultipartFile url);

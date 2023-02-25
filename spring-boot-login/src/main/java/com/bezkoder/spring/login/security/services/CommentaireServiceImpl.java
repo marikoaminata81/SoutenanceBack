@@ -106,7 +106,7 @@ public class CommentaireServiceImpl implements CommentaireService{
         User authUser = userService.getAuthenticatedUser();
         Commentaire targetComment = getCommentaireById(commentId);
         if (targetComment.getLikeList().contains(authUser)) {
-            targetComment.setLikeCount(targetComment.getLikeCount() - 1);
+            targetComment.setLikeCount(targetComment.getLikeCount()-1);
             targetComment.getLikeList().remove(authUser);
             targetComment.setDateLastModified(new Date());
             Commentaire updatedComment = commentRepository.save(targetComment);
@@ -126,11 +126,10 @@ public class CommentaireServiceImpl implements CommentaireService{
     }
 
     @Override
-    public List<CommentResponse> getPostCommentsPaginate(Video video, Integer page, Integer size) {
+    public List<CommentResponse> getPostCommentsPaginate(Video video) {
         User authUser = userService.getAuthenticatedUser();
         List<Commentaire> foundCommentList = commentRepository.findByVideo(
-                video,
-                PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "dateCreated"))
+                video
         );
 
         List<CommentResponse> commentResponseList = new ArrayList<>();

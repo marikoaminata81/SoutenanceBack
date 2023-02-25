@@ -17,15 +17,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -118,19 +115,14 @@ public class UserServiceImp implements UserService{
     }
 
     @Override
-    public List<UserResponse> getFollowerUsersPaginate(Long userId, Integer page, Integer size) {
+    public List<User> getFollowerUsersPaginate(Long userId) {
         User targetUser = getUserById(userId);
-        return userRepository.findUsersByFollowingUsers(targetUser,
-                        PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "firstName", "lastName")))
-                .stream().map(this::userToUserResponse).collect(Collectors.toList());
-    }
+        return userRepository.findUsersByFollowingUsers(targetUser);}
 
     @Override
-    public List<UserResponse> getFollowingUsersPaginate(Long userId, Integer page, Integer size) {
+    public List<User> getFollowingUsersPaginate(Long userId) {
         User targetUser = getUserById(userId);
-        return userRepository.findUsersByFollowerUsers(targetUser,
-                        PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "username")))
-                .stream().map(this::userToUserResponse).collect(Collectors.toList());
+        return userRepository.findUsersByFollowerUsers(targetUser);
     }
 
 
@@ -175,6 +167,21 @@ public class UserServiceImp implements UserService{
         }
     }
 
+    public void followUser1(Long userId) {
+        User authUser = getAuthenticatedUser();
+        if (!authUser.getId().equals(userId)) {
+            User userToFollow = getUserById(userId);
+            authUser.getFollowingUsers().add(userToFollow);
+            authUser.setFollowingCount(authUser.getFollowingCount() + 1);
+            userToFollow.getFollowerUsers().add(authUser);
+            userToFollow.setFollowerCount(userToFollow.getFollowerCount() + 1);
+            userRepository.save(userToFollow);
+            userRepository.save(authUser);
+        } else {
+            throw new IllegalArgumentException("Cannot follow yourself");
+        }
+    }
+
     @Override
     public void unfollowUser(Long userId) {
         User authUser = getAuthenticatedUser();
@@ -206,29 +213,22 @@ public class UserServiceImp implements UserService{
     }
 
     @Override
-    public List<UserResponse> getUserSearchResult(String key, Integer page, Integer size) {
+    public List<User> getUserSearchResult(String key) {
         if (key.length() < 3) throw new InvalidOperationException();
 
-        return userRepository.findUsersByUsername(
-                key,
-                PageRequest.of(page, size)
-        ).stream().map(this::userToUserResponse).collect(Collectors.toList());
+        return userRepository.findUsersByUsername(key);
     }
 
     @Override
-    public List<User> getLikesByPostPaginate(Video video, Integer page, Integer size) {
-        return userRepository.findUsersByLikedPosts(
-                video,
-                PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "firstName", "lastName"))
-        );
+    public List<User> getLikesByPostPaginate(Video video) {
+        return userRepository.findUsersByLikedPosts(video);
     }
 
 
     @Override
-    public List<User> getLikesByCommentPaginate(Commentaire commentaire, Integer page, Integer size) {
+    public List<User> getLikesByCommentPaginate(Commentaire commentaire) {
         return userRepository.findUsersByLikedComments(
-                commentaire,
-                PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "username"))
+                commentaire
         );
     }
 

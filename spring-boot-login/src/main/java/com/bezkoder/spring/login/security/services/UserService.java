@@ -4,11 +4,9 @@ import com.bezkoder.spring.login.models.Commentaire;
 import com.bezkoder.spring.login.models.User;
 import com.bezkoder.spring.login.models.Video;
 import com.bezkoder.spring.login.payload.response.MessageResponse;
-import com.bezkoder.spring.login.payload.response.UserResponse;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Optional;
 
 
 public interface UserService {
@@ -28,8 +26,8 @@ public interface UserService {
     User findByEmail(String email);
 
 
-    List<UserResponse> getFollowerUsersPaginate(Long userId, Integer page, Integer size);
-    List<UserResponse> getFollowingUsersPaginate(Long userId, Integer page, Integer size);
+    List<User> getFollowerUsersPaginate(Long userId);
+    List<User> getFollowingUsersPaginate(Long userId);
 
     User updateProfilePhoto(MultipartFile photo);
     User getUserById(Long userId);
@@ -38,9 +36,9 @@ public interface UserService {
     void unfollowUser(Long userId);
     User getAuthenticatedUser();
 
-    List<UserResponse> getUserSearchResult(String key, Integer page, Integer size);
-    List<User> getLikesByPostPaginate(Video video, Integer page, Integer size);
-    List<User> getLikesByCommentPaginate(Commentaire commentaire, Integer page, Integer size);
+    List<User> getUserSearchResult(String key);
+    List<User> getLikesByPostPaginate(Video video);
+    List<User> getLikesByCommentPaginate(Commentaire commentaire);
 
 
 }

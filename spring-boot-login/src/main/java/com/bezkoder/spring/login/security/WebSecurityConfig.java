@@ -93,7 +93,12 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
             .antMatchers("/api/v1/**").permitAll()
 
             .antMatchers("/api/video/all").permitAll()
-            .antMatchers("/api/video/**").permitAll()
+            .antMatchers("/api/video/posts/comments/{commentId}/likes").permitAll()
+            .antMatchers("/api/video/posts/{postId}/comments").authenticated()
+            .antMatchers("/api/video/posts/comments/{commentId}/unlike").authenticated()
+            .antMatchers("/api/video/posts/comments/{commentId}/like").authenticated()
+            .antMatchers("/api/video/posts/{postId}/comments/{commentId}/delete").authenticated()
+
         .anyRequest().authenticated();
     http.formLogin();
     http.oauth2Login();

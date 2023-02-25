@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
-import com.bezkoder.spring.login.payload.response.PostResponse;
+import com.bezkoder.spring.login.models.Video;
 import com.bezkoder.spring.login.payload.response.UserResponse;
 import com.bezkoder.spring.login.security.services.UserService;
 import com.bezkoder.spring.login.security.services.VideoService;
@@ -59,6 +59,7 @@ public class AuthController {
   @Autowired
   JwtUtils jwtUtils;
 
+    //ça marche
   @PostMapping("/connexion")
   public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 
@@ -90,6 +91,7 @@ public class AuthController {
       return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtCookie.toString()).body("Bienvenue Admin");
   }
 
+  //ça marche
   @PostMapping("/inscription")
   public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
     if (userRepository.existsByUsername(signUpRequest.getUsername())) {
@@ -144,7 +146,7 @@ public class AuthController {
 
     return ResponseEntity.ok(new MessageResponse("Utilisateur ajouter avec succes", true));
   }
-
+//ça marche
   @PostMapping("/deconnection")
   public ResponseEntity<?> logoutUser() {
     ResponseCookie cookie = jwtUtils.getCleanJwtCookie();
@@ -152,46 +154,42 @@ public class AuthController {
         .body(new MessageResponse("Vous vous êtes deconnecter!", true));
   }
 
-  @PostMapping("/account/update/profile-photo")
+
+  @PutMapping("/account/update/profile-photo")
   public ResponseEntity<?> updateProfilePhoto(@RequestParam("photo") MultipartFile photo) {
     User updatedUser = userService.updateProfilePhoto(photo);
     return new ResponseEntity<>(updatedUser, HttpStatus.OK);
   }
 
 
-
+  //ça marche
   @PostMapping("/account/follow/{userId}")
   public ResponseEntity<?> followUser(@PathVariable("userId") Long userId) {
     userService.followUser(userId);
     return new ResponseEntity<>(HttpStatus.OK);
   }
 
+  //ça marche
   @PostMapping("/account/unfollow/{userId}")
   public ResponseEntity<?> unfollowUser(@PathVariable("userId") Long userId) {
     userService.unfollowUser(userId);
     return new ResponseEntity<>(HttpStatus.OK);
   }
-
+//ça marche
   @GetMapping("/users/{userId}/following")
-  public ResponseEntity<?> getUserFollowingUsers(@PathVariable("userId") Long userId,
-                                                 @RequestParam("page") Integer page,
-                                                 @RequestParam("size") Integer size) {
-    page = page < 0 ? 0 : page-1;
-    size = size <= 0 ? 5 : size;
-    List<UserResponse> followingList = userService.getFollowingUsersPaginate(userId, page, size);
+  public ResponseEntity<?> getUserFollowingUsers(@PathVariable("userId") Long userId) {
+
+    List<User> followingList = userService.getFollowingUsersPaginate(userId);
     return new ResponseEntity<>(followingList, HttpStatus.OK);
   }
-
+//ça marche
   @GetMapping("/users/{userId}/follower")
-  public ResponseEntity<?> getUserFollowerUsers(@PathVariable("userId") Long userId,
-                                                @RequestParam("page") Integer page,
-                                                @RequestParam("size") Integer size) {
-    page = page < 0 ? 0 : page-1;
-    size = size <= 0 ? 5 : size;
-    List<UserResponse> followingList = userService.getFollowerUsersPaginate(userId, page, size);
+  public ResponseEntity<?> getUserFollowerUsers(@PathVariable("userId") Long userId) {
+    List<User> followingList = userService.getFollowerUsersPaginate(userId);
     return new ResponseEntity<>(followingList, HttpStatus.OK);
   }
-
+//voir Id des autres user mais pas de l'utilisateur connecter
+  //ça marche
   @GetMapping("/users/{userId}")
   public ResponseEntity<?> getUserById(@PathVariable("userId") Long userId) {
     User authUser = userService.getAuthenticatedUser();
@@ -202,25 +200,19 @@ public class AuthController {
             .build();
     return new ResponseEntity<>(userResponse, HttpStatus.OK);
   }
-
+//ça marche
   @GetMapping("/users/{userId}/posts")
-  public ResponseEntity<?> getUserPosts(@PathVariable("userId") Long userId,
-                                        @RequestParam("page") Integer page,
-                                        @RequestParam("size") Integer size) {
-    page = page < 0 ? 0 : page-1;
-    size = size <= 0 ? 5 : size;
+  public ResponseEntity<?> getUserPosts(@PathVariable("userId") Long userId) {
+
     User targetUser = userService.getUserById(userId);
-    List<PostResponse> userPosts = videoService.getPostsByUserPaginate(targetUser, page, size);
+    List<Video> userPosts = videoService.getPostsByUserPaginate(targetUser);
     return new ResponseEntity<>(userPosts, HttpStatus.OK);
   }
-
+//Pas important
   @GetMapping("/users/search")
-  public ResponseEntity<?> searchUser(@RequestParam("key") String key,
-                                      @RequestParam("page") Integer page,
-                                      @RequestParam("size") Integer size) {
-    page = page < 0 ? 0 : page-1;
-    size = size <= 0 ? 5 : size;
-    List<UserResponse> userSearchResult = userService.getUserSearchResult(key, page, size);
+  public ResponseEntity<?> searchUser(@RequestParam("key") String key) {
+
+    List<User> userSearchResult = userService.getUserSearchResult(key);
     return new ResponseEntity<>(userSearchResult, HttpStatus.OK);
   }
 }

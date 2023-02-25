@@ -13,5 +13,5 @@ public interface CommentaireService {
     Commentaire likeComment(Long commentId);
     Commentaire unlikeComment(Long commentId);
     void deleteComment(Long commentId);
-    List<CommentResponse> getPostCommentsPaginate(Video video, Integer page, Integer size);
+    List<CommentResponse> getPostCommentsPaginate(Video video);
 }
