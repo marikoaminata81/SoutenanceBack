@@ -1,10 +1,7 @@
 package com.bezkoder.spring.login.security.services;
 
 import com.bezkoder.spring.login.exception.NotificationNotFoundException;
-import com.bezkoder.spring.login.models.Commentaire;
-import com.bezkoder.spring.login.models.Notification;
-import com.bezkoder.spring.login.models.User;
-import com.bezkoder.spring.login.models.Video;
+import com.bezkoder.spring.login.models.*;
 import com.bezkoder.spring.login.repository.NotificationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -120,4 +117,64 @@ public class NotificationServiceImpl implements NotificationService {
     public void deleteNotificationByOwningComment(Commentaire owningCommentaire) {
         notificationRepository.deleteNotificationByOwningCommentaire(owningCommentaire);
     }
-}
+
+    @Override
+    public void sendNotificationCommande(User receiver, User sender, Commande commande, String type) {
+        try {
+            System.err.println("try");
+            Notification targetNotification = getNotificationByReceiverAndOwningCommandeAndType(receiver, commande, type);
+            targetNotification.setReceiver(receiver); // fix: set receiver instead of sender
+            targetNotification.setIsSeen(false);
+            targetNotification.setIsRead(false);
+            targetNotification.setDateUpdated(new Date());
+            targetNotification.setDateLastModified(new Date());
+            notificationRepository.save(targetNotification);
+        } catch (NotificationNotFoundException e) {
+            System.err.println("catch");
+            Notification newNotification = new Notification();
+            newNotification.setType(type);
+            newNotification.setReceiver(sender);
+            newNotification.setSender(receiver);
+            newNotification.setOwningCommande(commande);
+            newNotification.setIsSeen(false);
+            newNotification.setIsRead(false);
+            newNotification.setDateCreated(new Date());
+            newNotification.setDateUpdated(new Date());
+            newNotification.setDateLastModified(new Date());
+            notificationRepository.save(newNotification);
+        }
+    }
+  /*  public void sendNotificationCommande(User receiver, User sender, Commande commande, String type) {
+        try {
+            Notification targetNotification = getNotificationByReceiverAndOwningCommandeAndType(receiver, commande, type);
+            targetNotification.setSender(receiver);
+            targetNotification.setIsSeen(false);
+            targetNotification.setIsRead(false);
+            targetNotification.setDateUpdated(new Date());
+            targetNotification.setDateLastModified(new Date());
+            notificationRepository.save(targetNotification);
+        } catch (NotificationNotFoundException e) {
+            Notification newNotification = new Notification();
+            newNotification.setType(type);
+            newNotification.setReceiver(sender);
+            newNotification.setSender(receiver);
+            newNotification.setOwningCommande(commande);
+            newNotification.setIsSeen(false);
+            newNotification.setIsRead(false);
+            newNotification.setDateCreated(new Date());
+            newNotification.setDateUpdated(new Date());
+            newNotification.setDateLastModified(new Date());
+            notificationRepository.save(newNotification);
+        }
+    }*/
+
+    @Override
+    public Notification getNotificationByReceiverAndOwningCommandeAndType(User receiver, Commande owningCommande, String type) {
+           return notificationRepository.findByReceiverAndOwningCommandeAndType(receiver, owningCommande, type)
+                .orElseThrow(NotificationNotFoundException::new);
+    }
+    }
+
+
+
+

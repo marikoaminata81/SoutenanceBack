@@ -1,5 +1,6 @@
 package com.bezkoder.spring.login.controllers;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -7,9 +8,11 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import com.bezkoder.spring.login.image.saveImg;
 import com.bezkoder.spring.login.models.Video;
 import com.bezkoder.spring.login.payload.response.UserResponse;
 import com.bezkoder.spring.login.security.services.UserService;
+import com.bezkoder.spring.login.security.services.UserServiceImp;
 import com.bezkoder.spring.login.security.services.VideoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -21,6 +24,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import com.bezkoder.spring.login.models.ERole;
@@ -50,6 +54,8 @@ public class AuthController {
   @Autowired
   UserService userService;
 
+  @Autowired
+  UserServiceImp userServiceImp;
   @Autowired
   RoleRepository roleRepository;
 
@@ -154,15 +160,22 @@ public class AuthController {
         .body(new MessageResponse("Vous vous êtes deconnecter!", true));
   }
 
+//ça marche
+  @PutMapping("/modifierAvatar/{id}")
+  public MessageResponse modifierAvatar(@RequestParam("file") MultipartFile file,
+                                        @PathVariable("id") Long id) throws IOException {
+    User user = userServiceImp.getUserById(id); // Récupérer l'utilisateur par ID
+    String nomfile = StringUtils.cleanPath(file.getOriginalFilename());
 
-  @PutMapping("/account/update/profile-photo")
-  public ResponseEntity<?> updateProfilePhoto(@RequestParam("photo") MultipartFile photo) {
-    User updatedUser = userService.updateProfilePhoto(photo);
-    return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+    user.setPhoto(saveImg.save(file, nomfile)); // Enregistrer l'image en bytes
+
+    userServiceImp.ModifierProfil(user,id); // Appeler la méthode du service pour modifier l'utilisateur
+
+    return new MessageResponse("Avatar modifié avec succès !", true);
   }
 
 
-  //ça marche
+   //ça marche
   @PostMapping("/account/follow/{userId}")
   public ResponseEntity<?> followUser(@PathVariable("userId") Long userId) {
     userService.followUser(userId);

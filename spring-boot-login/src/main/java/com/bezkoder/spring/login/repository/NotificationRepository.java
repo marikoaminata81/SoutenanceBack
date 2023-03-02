@@ -1,9 +1,6 @@
 package com.bezkoder.spring.login.repository;
 
-import com.bezkoder.spring.login.models.Commentaire;
-import com.bezkoder.spring.login.models.Notification;
-import com.bezkoder.spring.login.models.User;
-import com.bezkoder.spring.login.models.Video;
+import com.bezkoder.spring.login.models.*;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -15,7 +12,7 @@ import java.util.Optional;
 public interface NotificationRepository extends JpaRepository<Notification,Long> {
 
     Optional<Notification> findByReceiverAndOwningVideoAndType(User receiver, Video owningVideo, String type);
-
+    Optional<Notification> findByReceiverAndOwningCommandeAndType(User receiver, Commande owningCommande, String type);
     List<Notification> findNotificationsByReceiver(User receiver,Pageable pageable);
 
     List<Notification> findNotificationsByReceiverAndIsSeenIsFalse(User receiver);

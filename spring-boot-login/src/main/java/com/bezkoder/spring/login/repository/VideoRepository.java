@@ -15,7 +15,7 @@ public interface VideoRepository extends JpaRepository<Video,Long> {
     List<Video> findVideoBySharedPost(Video video);
    // List<Video> findVideoByPostTags(Tag tag, Pageable pageable);
 
-    @Query(value = "select titre,imagecouverture,url, like_count, comment_count, share_count from video;"
+    @Query(value = "select titre,imagecouverture,url, like_count, comment_count from video;"
             ,nativeQuery = true)
     List<Video> ListeDesVideo(Video video);
 }

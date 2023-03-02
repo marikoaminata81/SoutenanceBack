@@ -37,6 +37,10 @@ public class Notification {
     @OneToOne
     @JoinColumn(name = "owning_comment_id")
     private Commentaire owningCommentaire;
+    @OneToOne
+    @JoinColumn(name = "owning_commande_id")
+    private Commande owningCommande;
+
 
     private Boolean isSeen;
     private Boolean isRead;

@@ -13,8 +13,6 @@ import com.bezkoder.spring.login.payload.util.FileUploadUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -42,6 +40,7 @@ public class UserServiceImp implements UserService{
     private final FileUploadUtil fileUploadUtil;
     @Autowired
     UserRepository userRepository;
+
     @Override
     public List<User> lister() {
         return userRepository.findAll();
@@ -83,12 +82,12 @@ public class UserServiceImp implements UserService{
 
             utilisateur.setPhoto(user.getPhoto());
             userRepository.save(utilisateur);
-            MessageResponse message = new MessageResponse("Photo de profil modifiée avec succès !",true);
+            MessageResponse message = new MessageResponse("Photo de profil modifiée avec succès !", true);
             return message;
         }
         else{
 
-            MessageResponse message = new MessageResponse("Photo de profil introuvable !",true);
+            MessageResponse message = new MessageResponse("Photo de profil introuvable !", true);
             return message;
 
         }
@@ -150,7 +149,24 @@ public class UserServiceImp implements UserService{
     }
 
 
+    /*public MessageResponse ModifierProfil(User user, Long id) {
 
+        if(userRepository.findById(id) != null){
+            User user1 = userRepository.findById(id).get();
+
+            user1.setPhoto(user.getPhoto());
+            userRepository.save(user1);
+            MessageResponse message = new MessageResponse("Image modifiée avec succès !",true);
+            return message;
+        }
+        else{
+
+            MessageResponse message = new MessageResponse("Image non trouver !",true);
+            return message;
+
+        }
+    }
+*/
     @Override
     public void followUser(Long userId) {
         User authUser = getAuthenticatedUser();
@@ -164,6 +180,7 @@ public class UserServiceImp implements UserService{
             userRepository.save(authUser);
         } else {
             throw new InvalidOperationException();
+
         }
     }
 

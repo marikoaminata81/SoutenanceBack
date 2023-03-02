@@ -86,7 +86,7 @@ public class VideoController {
 
 
 
-    @PutMapping("/posts/{postId}/update")
+    @PostMapping("/posts/{postId}/update")
     public ResponseEntity<?> updatePost(@PathVariable("postId") Long postId,
                                         @RequestParam(value = "titre", required = false) Optional<String> titre,
                                         @RequestParam(name = "imagecouverture", required = false) Optional<MultipartFile> imagecouverture,
@@ -130,6 +130,7 @@ public class VideoController {
         return new ResponseEntity<>(postLikerList, HttpStatus.OK);
     }
 
+//pas important
     @GetMapping("/posts/{postId}/shares")
     public ResponseEntity<?> getPostShares(@PathVariable("postId") Long postId) {
 
@@ -158,7 +159,7 @@ public class VideoController {
         return new ResponseEntity<>(postCommentResponseList, HttpStatus.OK);
     }
 
-    @PostMapping("/posts/{postId}/comments/create")
+    /*@PostMapping("/posts/{postId}/comments/create")
     public ResponseEntity<?> createPostComment(@PathVariable("postId") Long postId,
                                                @RequestParam(value = "contenue") String contenue)  {
 
@@ -172,7 +173,7 @@ public class VideoController {
 
             return new ResponseEntity<>(commentResponse, HttpStatus.OK);
 
-    }
+    }*/
 
     @PostMapping("/posts/{postId}/comments/{commentId}/update")
     public ResponseEntity<?> updatePostComment(@PathVariable("commentId") Long commentId,
@@ -246,26 +247,71 @@ public class VideoController {
 
 
 
-   //ça marche
+   //ça marche pas complétement
     @PostMapping("/posts/{postId}/comments")
-    public String updatePostCommen(@PathVariable("postId") Long postId,
-                                  // @RequestBody Commentaire com,
-                                   @RequestBody String contenue) {
+    public String CreaCommen(@PathVariable("postId") Long postId,
+                                   //@RequestBody Commentaire com
+                                   @RequestBody String contenue
+                                    ) {
 
 
-       Commentaire com = new Commentaire();
-       com.setContenue(contenue);
+      Commentaire com = new Commentaire();
+      // com.setContenue(contenue);
        Long user = userService.getAuthenticatedUser().getId();
        User us = userRepository.findById(user).get();
        com.setAuthor(us);
        Video vide = videoRepository.findById(postId).get();
+       //vide.setCommentCount();
        com.setVideo(vide);
        com.setLikeCount(0);
        com.setDateCreated(new Date());
        com.setDateLastModified(new Date());
-
-       commentaireRepository.save(com);
+        videoService.createPostComment(postId,contenue);
+     //  commentaireRepository.save(com);
        return "Vidéo commenté avec succées";
     }
 
+
+
+  /*  @PostMapping("/posts/{postId}/comments/creation")
+    public void Commentaire(@PathVariable("postId") Long postId,
+                            @RequestBody Commentaire com
+                          //  @RequestBody String contenue
+
+    ) throws IOException {
+
+        //Commentaire com = new Commentaire();
+        // com.setContenue(contenue);
+        Long user = userService.getAuthenticatedUser().getId();
+        User us = userRepository.findById(user).get();
+        com.setContenue(com.getContenue());
+        com.setAuthor(us);
+        Video vide = videoRepository.findById(postId).get();
+        //vide.setCommentCount();
+        com.setVideo(vide);
+        com.setLikeCount(0);
+        com.setDateCreated(new Date());
+        com.setDateLastModified(new Date());
+        commentaireRepository.save(com);
+
+
+    }
+
+    @PostMapping("/posts/{postId}/comments/amina")
+    public String createPostComment(@PathVariable Long postId,
+                                               @RequestBody Commentaire com) {
+        Long user = userService.getAuthenticatedUser().getId();
+        User us = userRepository.findById(user).get();
+        com.setContenue(com.getContenue());
+        com.setAuthor(us);
+        Video vide = videoRepository.findById(postId).get();
+        //vide.setCommentCount();
+
+        com.setVideo(vide);
+        com.setLikeCount(0);
+        com.setDateCreated(new Date());
+        com.setDateLastModified(new Date());
+        commentaireRepository.save(com);
+        return  "Bravo";
+    }*/
 }

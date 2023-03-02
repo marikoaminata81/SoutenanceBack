@@ -1,9 +1,6 @@
 package com.bezkoder.spring.login.security.services;
 
-import com.bezkoder.spring.login.models.Commentaire;
-import com.bezkoder.spring.login.models.Notification;
-import com.bezkoder.spring.login.models.User;
-import com.bezkoder.spring.login.models.Video;
+import com.bezkoder.spring.login.models.*;
 
 import java.util.List;
 
@@ -18,4 +15,7 @@ public interface NotificationService {
     void deleteNotification(User receiver, Video owningVideo, String type);
     void deleteNotificationByOwningPost(Video owningVideo);
     void deleteNotificationByOwningComment(Commentaire owningCommentaire);
+
+    void sendNotificationCommande(User receiver, User sender, Commande commande, String type);
+    Notification getNotificationByReceiverAndOwningCommandeAndType(User receiver, Commande commande, String type);
 }

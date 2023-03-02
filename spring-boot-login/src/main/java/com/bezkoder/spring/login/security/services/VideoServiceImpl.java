@@ -252,12 +252,12 @@ return null;
 
     @Override
     public Commentaire createPostComment(Long postId, String contenue) {
-        if (StringUtils.isEmpty(contenue)) throw new EmptyCommentException();
+
 
         User authUser = userService.getAuthenticatedUser();
         Video targetPost = getPostById(postId);
-        Commentaire savedComment = commentService.createNewCommentaire(contenue, targetPost);
-        targetPost.setCommentCount(targetPost.getCommentCount()+1);
+        Commentaire savedComment = commentService.createNewCommentaire(String.valueOf(contenue), targetPost);
+        targetPost.setCommentCount(targetPost.getCommentCount() + 1);
         videoRepository.save(targetPost);
 
         if (!targetPost.getAuthor().equals(authUser)) {
@@ -415,7 +415,8 @@ return null;
 
     // Cette méthode permet d'enregistrer un fichier sur le disque et de renvoyer le chemin du fichier enregistré
     private String saveFile(MultipartFile file) throws IOException {
-        String filePath = "C:/Users/ammariko/Documents/ionic/ikaGaFront/src/assets" + file.getOriginalFilename();
+       // String filePath = "C:/Users/ammariko/Documents/ionic/ikaGaFront/src/assets" + file.getOriginalFilename();
+        String filePath = "C:/Users/Poste7/Documents/SoutenanceFront-2/src/assets" + file.getOriginalFilename();
         File dest = new File(filePath);
         file.transferTo(dest);
         return filePath;
