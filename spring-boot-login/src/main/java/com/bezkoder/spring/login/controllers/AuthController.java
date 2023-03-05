@@ -41,7 +41,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/api/v1/auth")
 public class AuthController {
   @Autowired
   AuthenticationManager authenticationManager;
@@ -79,8 +79,8 @@ public class AuthController {
     ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(userDetails);
 
     List<String> roles = userDetails.getAuthorities().stream()
-        .map(item -> item.getAuthority())
-        .collect(Collectors.toList());
+            .map(item -> item.getAuthority())
+            .collect(Collectors.toList());
 
    /* return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
         .body(new UserInfoResponse(userDetails.getId(),
@@ -92,10 +92,14 @@ public class AuthController {
     if (roles.equals(rooool)){
       return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtCookie.toString()).body("Bienvenue User");
     }
-    else
+    else{
       roles.equals(roleee);
-      return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtCookie.toString()).body("Bienvenue Admin");
+    return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtCookie.toString()).body("Bienvenue Admin");
   }
+
+  }
+
+
 
   //ça marche
   @PostMapping("/inscription")

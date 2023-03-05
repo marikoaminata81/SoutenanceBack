@@ -1,16 +1,16 @@
 package com.bezkoder.spring.login.security.services;
 
-import com.bezkoder.spring.login.exception.EmptyCommentException;
-import com.bezkoder.spring.login.exception.InvalidOperationException;
 import com.bezkoder.spring.login.exception.PostNotFoundException;
-import com.bezkoder.spring.login.models.*;
-import com.bezkoder.spring.login.payload.response.MessageResponse;
+import com.bezkoder.spring.login.models.Categorie;
+import com.bezkoder.spring.login.models.Plats;
+import com.bezkoder.spring.login.models.User;
+import com.bezkoder.spring.login.models.Video;
 import com.bezkoder.spring.login.payload.response.PostResponse;
 import com.bezkoder.spring.login.payload.util.FileNamingUtil;
 import com.bezkoder.spring.login.payload.util.FileUploadUtil;
+import com.bezkoder.spring.login.repository.PlatsRepository;
 import com.bezkoder.spring.login.repository.ProduitRepository;
 import com.bezkoder.spring.login.repository.UserRepository;
-import com.bezkoder.spring.login.repository.VideoRepository;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.env.Environment;
@@ -20,16 +20,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
-
-public class ProduitServiceImpl implements ProduitService {
-    private final ProduitRepository produitRepository;
+public class PlatsServiceImpl implements PlatsService {
+    private final PlatsRepository platsRepository;
     private final UserService userService;
 
 
@@ -39,26 +36,26 @@ public class ProduitServiceImpl implements ProduitService {
     private final UserRepository userRepository;
 
     @Override
-    public Produit getProduitById(Long prodId) {
-        return produitRepository.findById(prodId).orElseThrow(PostNotFoundException::new);
+    public Plats getPlatsById(Long platId){
+        return platsRepository.findById(platId).orElseThrow(PostNotFoundException::new);
     }
 
     @Override
-    public List<Produit> ListeDesProduit() {
-        return produitRepository.ListeDesProduit();
+    public List<Plats> ListeDesPlats() {
+        return platsRepository.ListeDesPlats();
     }
 
     @Override
-    public List<Produit> getProduitByUser(User author) {
-        return produitRepository. findProduitByAuthor(author);
+    public List<Plats> getPlatsByUser(User author) {
+        return platsRepository. findPlatsByAuthor(author);
     }
 
 
 
 
     @Override
-    public Produit updateProduit(Long prodId, String nom, MultipartFile imagecouverture,String description) {
-        Produit targetProd = getProduitById(prodId);
+    public Plats updatePlats(Long platId, String nom, MultipartFile imagecouverture, String description) {
+        Plats targetProd = getPlatsById(platId);
         if (StringUtils.isNotEmpty(nom)) {
             targetProd.setNom(nom);
         }
@@ -82,38 +79,35 @@ public class ProduitServiceImpl implements ProduitService {
         }
 
 
-        return produitRepository.save(targetProd);
+        return platsRepository.save(targetProd);
     }
 
     @Override
-    public void deleteProduit(Long prodId) {
+    public void deletePlats(Long platId) {
         User authUser = userService.getAuthenticatedUser();
-        Produit targetProd = getProduitById(prodId);
+        Plats targetProd = getPlatsById(platId);
 
-            produitRepository.deleteById(prodId);
+        platsRepository.deleteById(platId);
 
-            if (targetProd.getImagecouverture() != null && targetProd. getImagecouverture() !=null) {
-                String uploadDir = environment.getProperty("upload.post.images");
-                String photoName = getPhotoNameFromPhotoUrl(targetProd.getImagecouverture());
-                try {
-                    fileUploadUtil.deleteFile(uploadDir, photoName);
+        if (targetProd.getImagecouverture() != null && targetProd. getImagecouverture() !=null) {
+            String uploadDir = environment.getProperty("upload.post.images");
+            String photoName = getPhotoNameFromPhotoUrl(targetProd.getImagecouverture());
+            try {
+                fileUploadUtil.deleteFile(uploadDir, photoName);
 
-                } catch (IOException ignored) {}
-            }
+            } catch (IOException ignored) {}
+        }
 
-}
-
-
-    public List<Produit> getAllProducts() {
-        return produitRepository.findAll();
     }
 
-    public Produit getProductById(Long productId) {
-        return produitRepository.findById(productId).orElseThrow(PostNotFoundException::new);
+
+    public List<Plats> getAllPlats() {
+        return platsRepository.findAll();
     }
 
-    public List<Produit> getProductsByCategory(Categorie categorie) {
-        return produitRepository.findProduitByCategorie(categorie);
+
+    public List<Plats> getProductsByCategory(Categorie categorie) {
+        return platsRepository.findPlatsByCategorie(categorie);
     }
 
     private String getPhotoNameFromPhotoUrl(String photoUrl) {
@@ -134,17 +128,17 @@ public class ProduitServiceImpl implements ProduitService {
                 .build();
     }
 
-    public Produit modifier(Produit produit, Long id) {
+    public Plats modifier(Plats plats, Long id) {
 
-        return produitRepository.findById(id)
+        return platsRepository.findById(id)
                 .map(u ->{
-                    u.setEtat(produit.isEtat());
+                    u.setEtat(plats.isEtat());
 
-                    return produitRepository.save(u);
+                    return platsRepository.save(u);
                 } ).orElseThrow(() -> new RuntimeException("Ce produit n'existe pas !"));
     }
 
-    public Produit createNewProduit(String nom , MultipartFile imagecouverture,Double prix, String reference ,String description,Date datefab,Date dateperem, Categorie categorie) throws IOException {
+    public Plats createNewPlats(String nom , MultipartFile imagecouverture,Double prix, String reference ,String description, Categorie categorie) throws IOException {
         // Enregistrer la photo
         String photoPath = saveFile(imagecouverture);
 
@@ -154,21 +148,19 @@ public class ProduitServiceImpl implements ProduitService {
         System.err.println(user.getNom());
         System.err.println(user);
         // Créer une nouvelle vidéo
-        Produit produit = new Produit();
+        Plats produit = new Plats();
 
         produit.setNom(nom);
         produit.setImagecouverture(photoPath);
         produit.setDescription(description);
         produit.setReference(reference);
         produit.setPrix(prix);
-        produit.setDatefab(datefab);
-        produit.setDateperem(dateperem);
         produit.setEtat(false);
-      //  produit.setQuantiteVente(quantiteVente);
+        //  produit.setQuantiteVente(quantiteVente);
         produit.setCategorie(categorie);
         produit.setAuthor(user);
         // Enregistrer la vidéo dans la base de données
-        produitRepository.save(produit);
+        platsRepository.save(produit);
 
         // Ajouter la vidéo à la liste de vidéos de l'utilisateur
 
@@ -184,7 +176,7 @@ public class ProduitServiceImpl implements ProduitService {
 
     // Cette méthode permet d'enregistrer un fichier sur le disque et de renvoyer le chemin du fichier enregistré
     private String saveFile(MultipartFile file) throws IOException {
-         String filePath = "C:/Users/ammariko/Documents/ionic/ikaGaFront/src/assets" + file.getOriginalFilename();
+        String filePath = "C:/Users/ammariko/Documents/ionic/ikaGaFront/src/assets" + file.getOriginalFilename();
         //String filePath = "C:/Users/Poste7/Documents/SoutenanceFront-2/src/assets" + file.getOriginalFilename();
         File dest = new File(filePath);
         file.transferTo(dest);

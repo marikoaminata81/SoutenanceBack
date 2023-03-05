@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "/commande")
+@RequestMapping(path = "/api/v1/commande")
 @CrossOrigin(origins = "*", maxAge = 3600)
 
 public class CommandeController {

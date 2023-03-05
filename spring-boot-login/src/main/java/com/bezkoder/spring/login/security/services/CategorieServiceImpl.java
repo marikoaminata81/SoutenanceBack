@@ -42,10 +42,12 @@ public class CategorieServiceImpl implements CategorieService{
         String photoPath = saveFile(imagecouverture);
 
 
-        User user = userService.getAuthenticatedUser();
+      /*  User user = userService.getAuthenticatedUser();
         System.err.println(user.getId());
         System.err.println(user.getNom());
-        System.err.println(user);
+        System.err.println(user);*/
+
+
         // Créer une nouvelle vidéo
         Categorie categorie = new Categorie();
 
@@ -68,8 +70,8 @@ public class CategorieServiceImpl implements CategorieService{
 
     // Cette méthode permet d'enregistrer un fichier sur le disque et de renvoyer le chemin du fichier enregistré
     private String saveFile(MultipartFile file) throws IOException {
-        // String filePath = "C:/Users/ammariko/Documents/ionic/ikaGaFront/src/assets" + file.getOriginalFilename();
-        String filePath = "C:/Users/Poste7/Documents/SoutenanceFront-2/src/assets" + file.getOriginalFilename();
+         String filePath = "C:/Users/ammariko/Documents/ionic/ikaGaFront/src/assets" + file.getOriginalFilename();
+      //  String filePath = "C:/Users/Poste7/Documents/SoutenanceFront-2/src/assets" + file.getOriginalFilename();
         File dest = new File(filePath);
         file.transferTo(dest);
         return filePath;

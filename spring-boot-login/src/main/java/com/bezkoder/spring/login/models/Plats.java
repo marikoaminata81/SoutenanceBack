@@ -12,12 +12,12 @@ import java.util.Date;
 import java.util.Objects;
 
 @Entity
-@Table(name = "produit")
+@Table(name = "plat")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Produit {
+public class Plats {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -27,9 +27,7 @@ public class Produit {
     private String description;
     private Double prix;
     private LocalDate datesoumis;
-    private Date datefab;
-    private Date dateperem;
-   // private Long quantiteVente;
+    // private Long quantiteVente;
     private boolean etat;
     @JsonIgnore
     @ManyToOne
@@ -46,8 +44,8 @@ public class Produit {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Produit produit = (Produit) o;
-        return Objects.equals(id, produit.id) && Objects.equals(author, produit.author);
+        Plats plats = (Plats) o;
+        return Objects.equals(id, plats.id) && Objects.equals(author, plats.author);
     }
 
     @Override

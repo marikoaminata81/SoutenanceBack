@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface CommentaireRepository extends JpaRepository<Commentaire,Long> {
     List<Commentaire> findByVideo(Video video);
+
+    String findByContenue(String contenue);
 }

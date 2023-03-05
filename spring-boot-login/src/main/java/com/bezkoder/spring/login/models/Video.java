@@ -34,12 +34,12 @@ public class Video {
     @Column(nullable = false)
     private Boolean isTypeShare;
 
-
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "author_id")
     private User author;
 
-    @JsonIgnore
+   // @JsonIgnore
     @OneToMany(mappedBy = "video", cascade = CascadeType.REMOVE)
     private List<Commentaire> postComments = new ArrayList<>();
 
@@ -52,11 +52,12 @@ public class Video {
     )
     private List<User> likeList = new ArrayList<>();
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "shared_post_id")
     private Video sharedPost;
 
-    @JsonIgnore
+    //@JsonIgnore
     @OneToMany(mappedBy = "sharedPost")
     private List<Video> shareList = new ArrayList<>();
 

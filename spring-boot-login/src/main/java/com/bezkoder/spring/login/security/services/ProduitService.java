@@ -9,6 +9,7 @@ import com.bezkoder.spring.login.payload.response.PostResponse;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 public interface ProduitService {
@@ -16,11 +17,11 @@ public interface ProduitService {
 
    // PostResponse getPostResponseById(Long prodId);
 
-   List<Produit>ListeDesProduitValider(Produit produit);
+   List<Produit>ListeDesProduit();
     List<Produit> getProduitByUser(User author);
 
 
-    Produit createNewProduit(String nom , MultipartFile imagecouverture,Double prix, String reference ,String description, Categorie categorie) throws IOException;
+    Produit createNewProduit(String nom , MultipartFile imagecouverture, Double prix, String reference , String description, Date datefab, Date dateperem, Categorie categorie) throws IOException;
     Produit updateProduit(Long prodId, String nom, MultipartFile imagecouverture,String description);
     void deleteProduit(Long prodId);
 

@@ -33,6 +33,7 @@ public class User {
   private String username;
   private String numero;
   private String email;
+  private String intro;
   private String password;
   private String Adresse;
   private String photo;
@@ -58,11 +59,9 @@ public class User {
   @ManyToMany(mappedBy = "followerUsers")
   private List<User> followingUsers = new ArrayList<>();
 
-  @JsonIgnore
   @OneToMany(mappedBy = "author", cascade = CascadeType.REMOVE)
   private List<Video> VideoList = new ArrayList<>();
 
-  @JsonIgnore
   @OneToMany(mappedBy = "author", cascade = CascadeType.REMOVE)
   private List<Produit> ProduitList = new ArrayList<>();
 

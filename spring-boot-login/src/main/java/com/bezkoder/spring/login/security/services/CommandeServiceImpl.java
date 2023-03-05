@@ -92,7 +92,7 @@ private NotificationService notificationService;
 
 // Si la commande n'a pas été passée par l'utilisateur connecté, envoyer une notification à l'utilisateur qui a passé la commande
 
-            if (commande.getUser().equals(authUser)) {
+            if (!commande.getUser().equals(authUser)) {
                 notificationService.sendNotificationCommande(
                         commande.getUser(),
                         authUser,

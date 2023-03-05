@@ -9,7 +9,7 @@ import java.io.IOException;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/categorie")
+@RequestMapping("/api/v1/categorie")
 public class CategorieController {
 
     private final CategorieService categorieService;

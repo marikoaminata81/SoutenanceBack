@@ -9,10 +9,7 @@ import com.bezkoder.spring.login.payload.response.PostResponse;
 import com.bezkoder.spring.login.repository.CommentaireRepository;
 import com.bezkoder.spring.login.repository.UserRepository;
 import com.bezkoder.spring.login.repository.VideoRepository;
-import com.bezkoder.spring.login.security.services.CommentaireService;
-import com.bezkoder.spring.login.security.services.UserService;
-import com.bezkoder.spring.login.security.services.VideoService;
-import com.bezkoder.spring.login.security.services.VideoServiceImpl;
+import com.bezkoder.spring.login.security.services.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -28,7 +25,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/video")
+@RequestMapping("/api/v1/video")
 @RequiredArgsConstructor
 public class VideoController {
     private final VideoService videoService;
@@ -38,6 +35,7 @@ public class VideoController {
     private final UserRepository userRepository;
     private final VideoRepository videoRepository;
     private final CommentaireRepository commentaireRepository;
+    private final NotificationService notificationService;
 
     @PostMapping("/posts/create")
 
@@ -250,15 +248,16 @@ public class VideoController {
    //ça marche pas complétement
     @PostMapping("/posts/{postId}/comments")
     public String CreaCommen(@PathVariable("postId") Long postId,
-                                   //@RequestBody Commentaire com
-                                   @RequestBody String contenue
+                                   @RequestBody Commentaire com
+                                   //@RequestBody String contenue
                                     ) {
 
 
-      Commentaire com = new Commentaire();
-      // com.setContenue(contenue);
+      //Commentaire com = new Commentaire();
+       //com.setContenue(contenue);
        Long user = userService.getAuthenticatedUser().getId();
        User us = userRepository.findById(user).get();
+        User user1 = userRepository.findById(user).get();
        com.setAuthor(us);
        Video vide = videoRepository.findById(postId).get();
        //vide.setCommentCount();
@@ -266,8 +265,11 @@ public class VideoController {
        com.setLikeCount(0);
        com.setDateCreated(new Date());
        com.setDateLastModified(new Date());
-        videoService.createPostComment(postId,contenue);
-     //  commentaireRepository.save(com);
+
+       //String ccc = commentaireRepository.findByContenue(contenue);
+        videoService.createPostComment(postId, com.getContenue());
+        //notificationService.sendNotification(us,);
+       //commentaireRepository.save(com);
        return "Vidéo commenté avec succées";
     }
 
@@ -314,4 +316,16 @@ public class VideoController {
         commentaireRepository.save(com);
         return  "Bravo";
     }*/
+
+
+
+
+    @GetMapping("/videoParUser/{userId}")
+    public List<Video> videoParUser(@PathVariable("userId") User userId){
+
+        return videoRepository.findVideoByAuthor(userId);
+    }
+
+
+
 }

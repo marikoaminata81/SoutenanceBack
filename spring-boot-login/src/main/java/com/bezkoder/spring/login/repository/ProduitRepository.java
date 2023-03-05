@@ -18,5 +18,5 @@ public interface ProduitRepository extends JpaRepository<Produit,Long> {
 
     @Query(value = "SELECT * FROM `produit` WHERE etat=1; "
             ,nativeQuery = true)
-    List<Produit>ListeDesProduit(Produit produit);
+    List<Produit>ListeDesProduit();
 }

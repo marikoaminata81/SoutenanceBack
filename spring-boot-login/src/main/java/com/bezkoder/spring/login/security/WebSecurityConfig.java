@@ -90,19 +90,12 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
         .authorizeRequests().antMatchers("/api/auth/**").permitAll()
         .antMatchers("/api/test/**").permitAll()
         .antMatchers("/api/User/**").authenticated()
-           // .antMatchers("/api/v1/**").permitAll()
+            .antMatchers("/api/v1/**").permitAll()
 
-            .antMatchers("/api/video/all").permitAll()
-            .antMatchers("/api/video/posts/comments/{commentId}/likes").permitAll()
-            .antMatchers("/api/video/posts/{postId}/comments").authenticated()
-            .antMatchers("/api/video/posts/comments/{commentId}/unlike").authenticated()
-            .antMatchers("/api/video/posts/create").fullyAuthenticated()
-            .antMatchers("/api/video/posts/comments/{commentId}/like").authenticated()
-            .antMatchers("/api/video/posts/{postId}/comments/{commentId}/delete").authenticated()
-            .antMatchers("/categorie/**").authenticated()
-            .antMatchers("/produit/**").authenticated()
-            .antMatchers("/commande/**").authenticated()
-            .antMatchers("/api/v1/**").authenticated()
+            .antMatchers("/api/v1/video/all").permitAll()
+
+
+
 
         .anyRequest().authenticated();
     http.formLogin();
@@ -114,4 +107,5 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
 
     return http.build();
   }
+
 }

@@ -22,6 +22,7 @@ public class Commentaire {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idcommentaire;
+
     private String contenue;
     private Integer likeCount;
 

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "/historique")
+@RequestMapping(path = "/api/v1/historique")
 @CrossOrigin(origins = "*", maxAge = 3600)
 public class HistoriqueController {
 
@@ -20,8 +20,8 @@ public class HistoriqueController {
     @Autowired
     private UserRepository userRepository;
 
-    @GetMapping("/lesHistoriqueParFerme/{ferme}")
-    public List<Historique> mesHistos(@PathVariable("ferme") User user){
+    @GetMapping("/lesHistoriqueParUser/{User}")
+    public List<Historique> mesHistos(@PathVariable("user") User user){
         return historiqueRepository.findByUser(user);
     }
 
