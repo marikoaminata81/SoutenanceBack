@@ -39,7 +39,7 @@ public class Video {
     @JoinColumn(name = "author_id")
     private User author;
 
-   // @JsonIgnore
+   @JsonIgnore
     @OneToMany(mappedBy = "video", cascade = CascadeType.REMOVE)
     private List<Commentaire> postComments = new ArrayList<>();
 
@@ -57,7 +57,7 @@ public class Video {
     @JoinColumn(name = "shared_post_id")
     private Video sharedPost;
 
-    //@JsonIgnore
+    @JsonIgnore
     @OneToMany(mappedBy = "sharedPost")
     private List<Video> shareList = new ArrayList<>();
 

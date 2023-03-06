@@ -12,6 +12,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/notification")
 @RequiredArgsConstructor
+//@CrossOrigin
+@CrossOrigin(origins ={ "http://localhost:8100/" }, maxAge = 3600, allowCredentials="true")
 public class NotificationController {
     private final NotificationService notificationService;
 

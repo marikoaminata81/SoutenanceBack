@@ -8,6 +8,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 @RequiredArgsConstructor
+//@CrossOrigin
+@CrossOrigin(origins ={ "http://localhost:8100/" }, maxAge = 3600, allowCredentials="true")
 @RestController
 @RequestMapping("/api/v1/categorie")
 public class CategorieController {

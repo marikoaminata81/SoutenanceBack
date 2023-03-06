@@ -39,7 +39,8 @@ import com.bezkoder.spring.login.security.jwt.JwtUtils;
 import com.bezkoder.spring.login.security.services.UserDetailsImpl;
 import org.springframework.web.multipart.MultipartFile;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
+@CrossOrigin(origins ={ "http://localhost:8100/" }, maxAge = 3600, allowCredentials="true")
+//@CrossOrigin
 @RestController
 @RequestMapping("/api/v1/auth")
 public class AuthController {

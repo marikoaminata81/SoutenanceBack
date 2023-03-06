@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+//@CrossOrigin
+@CrossOrigin(origins ={ "http://localhost:8100/" }, maxAge = 3600, allowCredentials="true")
 @RequestMapping(path = "/api/v1/commande")
-@CrossOrigin(origins = "*", maxAge = 3600)
-
 public class CommandeController {
 
     @Autowired

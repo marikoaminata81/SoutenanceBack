@@ -27,6 +27,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/plat")
+
+@CrossOrigin(origins ={ "http://localhost:8100/" }, maxAge = 3600, allowCredentials="true")
 public class PlatsController {
     private final PlatsService platsService;
     private final PlatsServiceImpl platsServiceImpl;

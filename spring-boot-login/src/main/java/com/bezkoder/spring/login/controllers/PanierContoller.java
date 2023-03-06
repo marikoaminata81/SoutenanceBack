@@ -19,7 +19,8 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "/api/v1/panier")
-@CrossOrigin(origins = "*", maxAge = 3600)
+//@CrossOrigin
+@CrossOrigin(origins ={ "http://localhost:8100/" }, maxAge = 3600, allowCredentials="true")
 public class PanierContoller {
     @Autowired
     private PanierService panierService;

@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+//@CrossOrigin
+@CrossOrigin(origins ={ "http://localhost:8100/" }, maxAge = 3600, allowCredentials="true")
 @RequestMapping("/api/v1/video")
 @RequiredArgsConstructor
 public class VideoController {
@@ -105,21 +107,21 @@ public class VideoController {
         Video updatePost = videoService.updatePost(postId, contentToAdd, postPhotoToAdd,urlAdd);
         return new ResponseEntity<>(updatePost, HttpStatus.OK);
     }
-
-    @DeleteMapping("/posts/{postId}/delete")
+//marche pas
+    @PostMapping("/posts/{postId}/delete")
     public ResponseEntity<?> deletePost(@PathVariable("postId") Long postId) {
         videoService.deletePost(postId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
 
-
+//ça marche
     @GetMapping("/posts/{postId}")
     public ResponseEntity<?> getPostById(@PathVariable("postId") Long postId) {
         PostResponse foundPostResponse = videoService.getPostResponseById(postId);
         return new ResponseEntity<>(foundPostResponse, HttpStatus.OK);
     }
-
+//ça marche
     @GetMapping("/posts/{postId}/likes")
     public ResponseEntity<?> getPostLikes(@PathVariable("postId") Long postId) {
 
@@ -245,7 +247,7 @@ public class VideoController {
 
 
 
-   //ça marche pas complétement
+   //ça marche
     @PostMapping("/posts/{postId}/comments")
     public String CreaCommen(@PathVariable("postId") Long postId,
                                    @RequestBody Commentaire com

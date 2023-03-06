@@ -12,7 +12,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping(path = "/api/v1/historique")
-@CrossOrigin(origins = "*", maxAge = 3600)
+@CrossOrigin
+//@CrossOrigin(origins ={ "http://localhost:8100/" }, maxAge = 3600, allowCredentials="true")
 public class HistoriqueController {
 
     @Autowired
