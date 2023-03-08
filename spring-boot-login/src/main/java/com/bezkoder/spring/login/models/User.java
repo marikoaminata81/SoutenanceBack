@@ -85,9 +85,13 @@ public class User {
   }
 
 
-  public User(String username, String password, Collection<? extends GrantedAuthority> authorities) {
+  public User(String username, String nom, String prenom, String password,  Collection<? extends GrantedAuthority> authorities) {
     this.username=username;
+    this.nom=nom;
+    this.prenom=prenom;
     this.password=password;
+
+
 
   }
 }

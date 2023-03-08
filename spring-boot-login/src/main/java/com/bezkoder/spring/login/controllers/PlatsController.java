@@ -42,7 +42,7 @@ public class PlatsController {
             @RequestParam("reference") String reference,
             @RequestParam("prix") Double prix,
             @RequestParam("description") String description,
-            // @RequestParam("quantiteVente") Double quantiteVente,
+
             @RequestParam("categorie") Categorie categorie
 
 

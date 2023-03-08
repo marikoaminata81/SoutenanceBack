@@ -10,6 +10,7 @@ import javax.validation.Valid;
 
 import com.bezkoder.spring.login.image.saveImg;
 import com.bezkoder.spring.login.models.Video;
+import com.bezkoder.spring.login.payload.response.UserInfoResponse;
 import com.bezkoder.spring.login.payload.response.UserResponse;
 import com.bezkoder.spring.login.security.services.UserService;
 import com.bezkoder.spring.login.security.services.UserServiceImp;
@@ -94,8 +95,16 @@ public class AuthController {
       return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtCookie.toString()).body("Bienvenue User");
     }
     else{
-      roles.equals(roleee);
-    return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtCookie.toString()).body("Bienvenue Admin");
+    return  ResponseEntity.ok(new UserInfoResponse(
+            userDetails.getId(),
+            userDetails.getUsername(),
+            userDetails.getNumero(),
+            userDetails.getNom(),
+            userDetails.getPrenom(),
+            userDetails.getPassword(),
+            roles
+
+    ));
   }
 
   }
