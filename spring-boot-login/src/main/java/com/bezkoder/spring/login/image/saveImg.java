@@ -10,7 +10,7 @@ import java.nio.file.Paths;
 public class saveImg {
     public static String localhost = "http://127.0.0.1/";
     public static String serveruser = localhost + "ikagaImg/";
-    public static String userLocation = "C:/xamppO/htdocs/ikagaImg/";
+    public static String userLocation = "C:/xampp1/htdocs/ikagaImg/";
 
     public static String save(MultipartFile file, String fileName) {
         String src = "";

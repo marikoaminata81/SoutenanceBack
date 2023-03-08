@@ -91,7 +91,7 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
         .antMatchers("/api/test/**").permitAll()
         .antMatchers("/api/User/**").authenticated()
             .antMatchers("/api/v1/**").permitAll()
-
+            .antMatchers("/api/v1/auth/**").permitAll()
             .antMatchers("/api/v1/video/all").permitAll()
 
 

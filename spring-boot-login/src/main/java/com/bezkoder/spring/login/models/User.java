@@ -58,7 +58,7 @@ public class User {
   @JsonIgnore
   @ManyToMany(mappedBy = "followerUsers")
   private List<User> followingUsers = new ArrayList<>();
-
+@JsonIgnore
   @OneToMany(mappedBy = "author", cascade = CascadeType.REMOVE)
   private List<Video> VideoList = new ArrayList<>();
 

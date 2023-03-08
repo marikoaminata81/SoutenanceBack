@@ -13,16 +13,16 @@ import com.bezkoder.spring.login.payload.util.FileUploadUtil;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.env.Environment;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -51,6 +51,7 @@ public class VideoServiceImpl implements VideoService {
                 .likedByAuthUser(foundPost.getLikeList().contains(authUser))
                 .build();
     }
+
 
 /*    @Override
     public List<PostResponse> getTimelinePostsPaginate(Integer page, Integer size) {
@@ -354,6 +355,16 @@ return null;
         }
     }
 
+    @Override
+    public boolean verifyLikeByUser(Long postId, Long userId) {
+        List<Object> likeUser= videoRepository.verifierLikeVideoByUser(postId,userId);
+        System.out.println(likeUser);
+        if (likeUser.size()==0){
+            return false;
+        }
+        return true;
+    }
+
     private String getPhotoNameFromPhotoUrl(String photoUrl) {
         if (photoUrl != null) {
             String stringToOmit = environment.getProperty("app.root.backend") + File.separator
@@ -415,10 +426,10 @@ return null;
 
     // Cette méthode permet d'enregistrer un fichier sur le disque et de renvoyer le chemin du fichier enregistré
     private String saveFile(MultipartFile file) throws IOException {
-       // String filePath = "C:/Users/ammariko/Documents/ionic/ikaGaFront/src/assets" + file.getOriginalFilename();
-        String filePath = "C:/Users/Poste7/Documents/SoutenanceFront-2/src/assets" + file.getOriginalFilename();
+        String filePath = "C:/Users/ammariko/Documents/ionic/ikaGaFront/src/assets/" + file.getOriginalFilename();
+       // String filePath = "C:/Users/Poste7/Documents/SoutenanceFront-2/src/assets" + file.getOriginalFilename();
         File dest = new File(filePath);
         file.transferTo(dest);
-        return filePath;
+        return file.getOriginalFilename();
     }
 }

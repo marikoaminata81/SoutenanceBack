@@ -26,4 +26,5 @@ public interface VideoService {
     Video createPostShare(String content, Long postShareId);
     Video updatePostShare(String content, Long postShareId);
     void deletePostShare(Long postShareId);
+    boolean verifyLikeByUser(Long postId, Long userId);
 }

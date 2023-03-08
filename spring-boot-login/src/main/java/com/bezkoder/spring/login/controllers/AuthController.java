@@ -150,7 +150,7 @@ public class AuthController {
     user.setNom(signUpRequest.getNom());
     user.setPrenom(signUpRequest.getPrenom());
     user.setUsername(signUpRequest.getUsername());
-    user.setPhoto("http://127.0.0.1/ikagaImg.jpg");
+    user.setPhoto("http://127.0.0.1/ikagaImg/ikagaImg.jpg");
     user.setFollowerCount(0);
     user.setFollowingCount(0);
     userRepository.save(user);

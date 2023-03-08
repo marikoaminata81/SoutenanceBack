@@ -180,7 +180,7 @@ public class PlatsServiceImpl implements PlatsService {
         //String filePath = "C:/Users/Poste7/Documents/SoutenanceFront-2/src/assets" + file.getOriginalFilename();
         File dest = new File(filePath);
         file.transferTo(dest);
-        return filePath;
+        return file.getOriginalFilename();
     }
 
 }

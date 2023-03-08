@@ -34,8 +34,8 @@ public class Video {
     @Column(nullable = false)
     private Boolean isTypeShare;
 
-    @JsonIgnore
-    @ManyToOne
+
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "author_id")
     private User author;
 

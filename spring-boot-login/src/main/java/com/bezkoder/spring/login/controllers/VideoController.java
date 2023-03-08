@@ -5,14 +5,12 @@ import com.bezkoder.spring.login.models.Commentaire;
 import com.bezkoder.spring.login.models.User;
 import com.bezkoder.spring.login.models.Video;
 import com.bezkoder.spring.login.payload.response.CommentResponse;
-import com.bezkoder.spring.login.payload.response.PostResponse;
 import com.bezkoder.spring.login.repository.CommentaireRepository;
 import com.bezkoder.spring.login.repository.UserRepository;
 import com.bezkoder.spring.login.repository.VideoRepository;
 import com.bezkoder.spring.login.security.services.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -114,11 +112,22 @@ public class VideoController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @DeleteMapping("/delete/{postId}")
+    public ResponseEntity<?> supprimerVideo(@PathVariable("postId") Long postId) {
+
+        Video targetPost = videoService.getPostById(postId);
+        User UserAuth = userService.getAuthenticatedUser();
+        if (targetPost.getAuthor().equals(UserAuth)){
+            videoRepository.deleteById(postId);
+        }
+
+        return new ResponseEntity<>(postId, HttpStatus.OK);
+    }
 
 //ça marche
     @GetMapping("/posts/{postId}")
     public ResponseEntity<?> getPostById(@PathVariable("postId") Long postId) {
-        PostResponse foundPostResponse = videoService.getPostResponseById(postId);
+        Video foundPostResponse = videoService.getPostById(postId);
         return new ResponseEntity<>(foundPostResponse, HttpStatus.OK);
     }
 //ça marche
@@ -214,6 +223,7 @@ public class VideoController {
         return new ResponseEntity<>(commentLikes, HttpStatus.OK);
     }
 
+
     @PostMapping("/posts/{postId}/share/create")
     public ResponseEntity<?> createPostShare(@PathVariable("postId") Long postId,
                                              @RequestParam(value = "contenue", required = false) Optional<String> contenue) {
@@ -235,6 +245,11 @@ public class VideoController {
     public ResponseEntity<?> deletePostShare(@PathVariable("postShareId") Long postShareId) {
         videoService.deletePostShare(postShareId);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+    @PostMapping("/posts/{postId}/{userId}")
+    public boolean verifierUserLikePost(@PathVariable("postId") Long postId,@PathVariable("userId") Long userId) {
+
+        return videoService.verifyLikeByUser(postId,userId);
     }
 
     //ça marche
