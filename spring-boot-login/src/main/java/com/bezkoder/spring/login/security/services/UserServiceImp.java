@@ -2,11 +2,10 @@ package com.bezkoder.spring.login.security.services;
 
 import com.bezkoder.spring.login.exception.InvalidOperationException;
 import com.bezkoder.spring.login.exception.UserNotFoundException;
-import com.bezkoder.spring.login.models.Commentaire;
-import com.bezkoder.spring.login.models.User;
-import com.bezkoder.spring.login.models.Video;
+import com.bezkoder.spring.login.models.*;
 import com.bezkoder.spring.login.payload.response.MessageResponse;
 import com.bezkoder.spring.login.payload.response.UserResponse;
+import com.bezkoder.spring.login.repository.RoleRepository;
 import com.bezkoder.spring.login.repository.UserRepository;
 import com.bezkoder.spring.login.payload.util.FileNamingUtil;
 import com.bezkoder.spring.login.payload.util.FileUploadUtil;
@@ -15,12 +14,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -41,6 +43,12 @@ public class UserServiceImp implements UserService{
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    private RoleRepository roleRepository;
+
+    @Autowired
+    PasswordEncoder encoder;
+
     @Override
     public List<User> lister() {
         return userRepository.findAll();
@@ -48,6 +56,19 @@ public class UserServiceImp implements UserService{
 
     @Override
     public User creer(User user) {
+        return userRepository.save(user);
+    }
+
+    @Override
+    public User creeradmin(User user) {
+        Set<Role> roles = new HashSet<>();
+        Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
+                .orElseThrow(() -> new RuntimeException("Error: Le rôle est introuvable."));
+        roles.add(adminRole);
+        System.out.println("erttrtdtrtretretr"+roles);
+        user.setRoles(roles);
+        user.setPhoto("http://127.0.0.1/ikagaImg/ikagaImg.jpg");
+        user.setPassword(encoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
 

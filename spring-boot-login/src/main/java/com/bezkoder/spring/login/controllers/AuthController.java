@@ -233,4 +233,10 @@ public class AuthController {
     List<User> userSearchResult = userService.getUserSearchResult(key);
     return new ResponseEntity<>(userSearchResult, HttpStatus.OK);
   }
+
+  @PostMapping("/creeradmin")
+  public User creeradmin(User user) {
+
+    return userService.creeradmin(user);
+  }
 }

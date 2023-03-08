@@ -14,6 +14,8 @@ public interface UserService {
 
     User creer(User user);
 
+    User creeradmin(User user);
+
     User modifier(User user, Long id);
 
     String supprimer(Long id);

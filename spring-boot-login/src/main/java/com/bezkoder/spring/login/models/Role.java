@@ -1,9 +1,15 @@
 package com.bezkoder.spring.login.models;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "roles")
+@AllArgsConstructor
 public class Role {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

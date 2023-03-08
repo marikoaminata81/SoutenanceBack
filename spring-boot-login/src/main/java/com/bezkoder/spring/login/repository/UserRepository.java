@@ -30,4 +30,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
           "order by u.username asc,",
           nativeQuery = true)
   List<User> findUsersByUsername(String username);
+
 }
